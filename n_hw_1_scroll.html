@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        .content {
+            height: 300px;
+            overflow: auto;
+        }
+
+		.progress{
+			width: 100%;
+		}
+        .color-green {
+            color: green;
+        }
+
+        .color-red {
+            color: red;
+        }
+    </style>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sample">
+        <div v-if="!formSend">
+            <form @submit.prevent>
+                <div class="content alert alert-info" @scroll="myScroll($event)">
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                    <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" :style="curWidth"></div>
+                </div>
+                <div v-if="formRead">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="agree"
+								   value="agree" v-model="agree">
+                            Agree All
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="spam"
+								   value="spam" v-model="spam">
+                            Get Spam
+                        </label>
+                    </div>
+                    <div v-if="spam">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" id="spamEmail"
+                                       name="spamType" value="Email" v-model="spamtype" checked>
+                                Email
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" id="spamPhone"
+                                       name="spamType" value="Phone" v-model="spamtype">
+                                Phone
+                            </label>
+                        </div>
+                        {{spamtype}}
+                    </div>
+                    <hr>
+                    <button class="btn btn-primary" :disabled="!agree" @click="send">
+                        Send Data
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div v-else>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Agree All</td>
+                    <td :class="agreeClass">{{ agreeVal }}</td>
+                </tr>
+                <tr>
+                    <td>Get Spam</td>
+                    <td :class="agreeSpam">{{ spamVal }}</td>
+                </tr>
+                <tr v-if="spam">
+                    <td>Spam Type</td>
+                    <td>{{ spamtype }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    Vue.createApp({
+        data: () => ({
+            agree: false,
+            spam: false,
+            spamtype: 'Email',
+            heightScroll: 0,
+            heightMaxScroll: 0,
+            nowScroll: 0,
+            formSend: false
+        }),
+        computed: {
+            agreeVal() {
+                return this.agree === true ? "Yes" : "No"
+            },
+            spamVal() {
+                return this.spam === true ? "Yes" : "No"
+            },
+            agreeClass() {
+                return this.agree === true ? 'color-green' : "color-red"
+            },
+            agreeSpam() {
+                return this.spam === true ? 'color-green' : "color-red"
+            },
+            formRead() {
+                return this.nowScroll > 0.99;
+            },
+            curWidth(){
+                return { width: this.nowScroll * 100 + '%' };
+            }
+        },
+        methods: {
+            send() {
+                this.formSend = true;
+            },
+            myScroll(e) {
+                if (this.heightScroll === 0) {
+                    this.heightScroll = e.target.scrollHeight - e.target.clientHeight;
+                }
+                if (e.target.scrollTop > this.heightMaxScroll) {
+                    this.heightMaxScroll = e.target.scrollTop;
+                }
+                this.nowScroll = this.heightMaxScroll / this.heightScroll;
+            }
+        }
+    }).mount('.sample');
+
+</script>
+</body>
+</html>
